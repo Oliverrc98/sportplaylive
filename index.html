@@ -84,8 +84,7 @@ SportPlay TV
     id="player" 
     src="" 
     allowfullscreen 
-    referrerpolicy="no-referrer"
-    sandbox="allow-same-origin allow-scripts allow-presentation">
+    referrerpolicy="no-referrer">
 </iframe>
 </div>
 
@@ -109,7 +108,7 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 </div>
 
 <script>
-// Bloqueo global de window.open (incluyendo dentro de iframes)
+// Bloqueo global de pop-ups
 (function() {
     const originalOpen = window.open;
     window.open = function(url, name, specs) {
@@ -148,7 +147,7 @@ function showOverlay(){
     overlay.id = "overlay";
     overlay.textContent = "Cargando Modo Turbo...";
     playerFrame.appendChild(overlay);
-    setTimeout(()=>overlay.remove(),2000);
+    setTimeout(()=>overlay.remove(),1500);
 }
 
 function activateChannel(ch, div){
