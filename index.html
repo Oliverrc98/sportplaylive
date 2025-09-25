@@ -139,3 +139,35 @@ function activateChannel(ch, div){
         ray.className = 'rayito';
         ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
+    }
+
+    setTimeout(()=>flash.remove(),600);
+
+    document.querySelectorAll('.turbo-highlight').forEach(el=>{
+        el.classList.add('flash-text');
+        setTimeout(()=>el.classList.remove('flash-text'),600);
+    });
+
+    // Intento de ocultar anuncios del iframe (según política de CORS)
+    iframe.onload = () => {
+        try {
+            const ifrDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const ads = ifrDoc.querySelectorAll('iframe, .ad, .ads');
+            ads.forEach(a => a.style.display = 'none');
+        } catch(e) {
+            // si no se puede por CORS, no hacemos nada
+        }
+    };
+}
+
+sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd; };
+hdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.hd; };
+fsBtn.onclick = () => { 
+    if(iframe.requestFullscreen) iframe.requestFullscreen(); 
+    else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); 
+};
+
+loadChannels();
+</script>
+</body>
+</html>
