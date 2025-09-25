@@ -85,7 +85,7 @@ SportPlay TV
     src="" 
     allowfullscreen 
     referrerpolicy="no-referrer"
-    allow="autoplay; fullscreen; encrypted-media">
+    sandbox="allow-same-origin allow-scripts allow-presentation">
 </iframe>
 </div>
 
@@ -133,14 +133,28 @@ async function loadChannels() {
     });
 }
 
-// Muestra overlay temporal
+// Overlay temporal
 function showOverlay(){
     const overlay = document.createElement('div');
     overlay.id = "overlay";
     overlay.textContent = "Cargando Modo Turbo...";
     playerFrame.appendChild(overlay);
-    setTimeout(()=>overlay.remove(),2000); // desaparece en 2s
+    setTimeout(()=>overlay.remove(),2000);
 }
+
+// Bloqueo seguro de pop-ups
+iframe.addEventListener('load', () => {
+    try {
+        const iframeWindow = iframe.contentWindow;
+        // Evitar que el iframe abra ventanas externas
+        iframeWindow.open = function() { return null; };
+        iframeWindow.alert = function() {};
+        iframeWindow.confirm = function() { return false; };
+        iframeWindow.prompt = function() { return null; };
+    } catch(e){ 
+        // Algunos iframes externos no permiten acceder a contentWindow -> sandbox ya bloquea pop-ups
+    }
+});
 
 function activateChannel(ch, div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
@@ -151,9 +165,7 @@ function activateChannel(ch, div){
     const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
 
     iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
-    iframe.setAttribute("allow", "autoplay; fullscreen; encrypted-media");
 
-    // Mostrar overlay simulado
     showOverlay();
 
     // Flash principal
@@ -177,8 +189,8 @@ function activateChannel(ch, div){
     });
 }
 
-sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay(); };
-hdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay(); };
+sdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay(); } };
+hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay(); } };
 fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
