@@ -10,59 +10,39 @@
 
 <style>
 body { font-family: 'Roboto', Arial, sans-serif; background: #111; color: #fff; text-align: center; margin:0; padding:0; }
-header { background: linear-gradient(90deg,#0ea5a4,#3b82f6); padding:20px; font-size:28px; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
-header img { width:48px; height:48px; animation:spin 4s linear infinite; }
-@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+header { background: linear-gradient(90deg,#0ea5a4,#3b82f6); padding:15px; font-size:24px; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:10px;}
+header img { width:36px; height:36px; }
 
-.channel-list { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; }
-.channel { background:#333; margin:10px; padding:18px; border-radius:14px; width:220px; cursor:pointer; transition:0.3s; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;}
-.channel:hover { background:#444; transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.6);}
-.channel.active { outline:3px solid rgba(14,165,164,0.4); box-shadow:0 12px 40px rgba(0,0,0,0.6); transform:translateY(-4px); background:#0ea5a4; color:#021025;}
+.channel-list { display:flex; flex-wrap:wrap; justify-content:center; padding:15px; }
+.channel { background:#333; margin:8px; padding:12px; border-radius:12px; width:200px; cursor:pointer; transition:0.3s; font-weight:700; display:flex; align-items:center; justify-content:center;}
+.channel:hover { background:#444; transform:translateY(-2px);}
+.channel.active { outline:2px solid rgba(14,165,164,0.4); background:#0ea5a4; color:#021025;}
 
-.player-wrap { max-width:1100px; margin:24px auto; display:flex; gap:20px; align-items:flex-start; padding:18px; flex-wrap:wrap;}
-.player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
-.player-card:hover { transform:scale(1.01); }
-.player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7);}
+.player-wrap { max-width:900px; margin:20px auto; display:flex; flex-direction:column; gap:10px; align-items:center; }
+.player-frame { width:100%; height:400px; border-radius:10px; overflow:hidden; background:#000; position:relative;}
+.player-frame iframe { width:100%; height:100%; border:0; }
 
-/* Flash + rayitos múltiples */
+.btn { background:#0ea5a4; color:#021025; padding:8px 14px; border-radius:8px; cursor:pointer; border:none; font-weight:700; margin:4px;}
+.btn:hover { opacity:0.9; transform:translateY(-1px);}
+.btn.secondary { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cbd5e1;}
+
+/* Turbo flash */
 .turbo-flash {
   position:absolute;
   inset:0;
   pointer-events:none;
-  border-radius:12px;
+  border-radius:10px;
   background: linear-gradient(120deg, #0ea5a4, #3b82f6, #22d3ee);
   animation:flashGradient 0.6s ease-out;
   overflow:hidden;
 }
-.rayito {
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%);
-  opacity:0;
-  transform: translateX(-100%) skewX(-20deg);
-  border-radius:12px;
-}
 @keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);}}
-@keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);}}
 
-/* Botones y tips */
-.player-info { margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; color:#cbd5e1;}
-.player-info .title { font-weight:700; font-size:18px; color:#fff;}
-.btn { background:#0ea5a4; color:#021025; padding:10px 16px; border-radius:10px; cursor:pointer; border:none; font-weight:700; display:flex; align-items:center; gap:6px; transition:0.3s;}
-.btn:hover { opacity:0.9; transform:translateY(-2px);}
-.btn.secondary { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cbd5e1;}
-.player-tip { margin-top: 12px; padding: 12px 16px; background: rgba(14,165,164,0.1); color: #a5f3fc; font-size: 14px; border-radius: 10px; text-align: left; line-height: 1.5;}
-.player-tip .turbo-highlight { color: #0ea5a4; font-weight:700; transition: transform 0.3s, color 0.3s;}
-.player-tip .turbo-highlight.flash-text { animation: highlightFlash 0.6s ease-out;}
-@keyframes highlightFlash {0%{color:#0ea5a4;transform:scale(1);}50%{color:#a5f3fc;transform:scale(1.1);}100%{color:#0ea5a4;transform:scale(1);}}
-
-@media(max-width:900px){ .player-wrap{ flex-direction:column;} .channel{width:45%;} }
-@media(max-width:500px){ .channel{width:90%;} }
+@media(max-width:600px){ .channel{width:90%;} .player-frame{height:250px;} }
 </style>
 </head>
-
 <body>
+
 <header>
 <img src="img/windows_media_player.png" alt="Logo">
 SportPlay TV
@@ -71,32 +51,19 @@ SportPlay TV
 <div class="channel-list" id="channelList"></div>
 
 <div class="player-wrap">
-<div class="player-card">
 <div class="player-frame" id="playerFrame">
 <iframe id="player" src="" allowfullscreen referrerpolicy="no-referrer"></iframe>
 </div>
 
-<div class="player-info">
-<div><div class="title" id="playerTitle">Selecciona un canal</div></div>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+<div>
 <button id="sdBtn" class="btn secondary">SD</button>
 <button id="hdBtn" class="btn">HD</button>
 <button id="fsBtn" class="btn">Pantalla completa</button>
 </div>
 </div>
 
-<div class="player-tip">
-<p>
-Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal antes que los demás, para que no te griten el gol los vecinos.<br>
-* Velocidad puede variar dependiendo de tu conexión a internet. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente para que no te pierdas de ningún momento.
-</p>
-</div>
-</div>
-</div>
-
 <script>
 let currentChannel = null;
-const title = document.getElementById('playerTitle');
 const iframe = document.getElementById('player');
 const playerFrame = document.getElementById('playerFrame');
 const sdBtn = document.getElementById('sdBtn');
@@ -122,42 +89,17 @@ async function loadChannels() {
 function activateChannel(ch, div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
-    title.textContent = ch.name;
     currentChannel = ch;
 
-    // Elegir SD o HD automáticamente según velocidad
+    // Elegir HD/SD según velocidad
     const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
     iframe.src = fastConnection ? ch.streams.hd : ch.streams.sd;
 
-    // Flash turbo
+    // Turbo flash
     const flash = document.createElement('div');
     flash.className = 'turbo-flash';
     playerFrame.appendChild(flash);
-
-    for(let i=0;i<3;i++){
-        const ray = document.createElement('div');
-        ray.className = 'rayito';
-        ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
-        flash.appendChild(ray);
-    }
-
     setTimeout(()=>flash.remove(),600);
-
-    document.querySelectorAll('.turbo-highlight').forEach(el=>{
-        el.classList.add('flash-text');
-        setTimeout(()=>el.classList.remove('flash-text'),600);
-    });
-
-    // Intento de ocultar anuncios del iframe (según política de CORS)
-    iframe.onload = () => {
-        try {
-            const ifrDoc = iframe.contentDocument || iframe.contentWindow.document;
-            const ads = ifrDoc.querySelectorAll('iframe, .ad, .ads');
-            ads.forEach(a => a.style.display = 'none');
-        } catch(e) {
-            // si no se puede por CORS, no hacemos nada
-        }
-    };
 }
 
 sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd; };
@@ -169,5 +111,6 @@ fsBtn.onclick = () => {
 
 loadChannels();
 </script>
+
 </body>
 </html>
