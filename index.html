@@ -5,7 +5,7 @@
 <title>SportPlay TV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="icon" href="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" type="image/png">
+<link rel="icon" href="img/windows_media_player.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -22,8 +22,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 .player-wrap { max-width:1100px; margin:24px auto; display:flex; gap:20px; align-items:flex-start; padding:18px; flex-wrap:wrap;}
 .player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
 .player-card:hover { transform:scale(1.01); }
-.player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7); }
-.player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7);}
 
 /* Flash + rayitos múltiples */
 .turbo-flash {
@@ -44,20 +43,19 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
   transform: translateX(-100%) skewX(-20deg);
   border-radius:12px;
 }
-@keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);} }
-@keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);} }
+@keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);}}
+@keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);}}
 
+/* Botones y tips */
 .player-info { margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; color:#cbd5e1;}
 .player-info .title { font-weight:700; font-size:18px; color:#fff;}
-
 .btn { background:#0ea5a4; color:#021025; padding:10px 16px; border-radius:10px; cursor:pointer; border:none; font-weight:700; display:flex; align-items:center; gap:6px; transition:0.3s;}
 .btn:hover { opacity:0.9; transform:translateY(-2px);}
 .btn.secondary { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cbd5e1;}
-
 .player-tip { margin-top: 12px; padding: 12px 16px; background: rgba(14,165,164,0.1); color: #a5f3fc; font-size: 14px; border-radius: 10px; text-align: left; line-height: 1.5;}
 .player-tip .turbo-highlight { color: #0ea5a4; font-weight:700; transition: transform 0.3s, color 0.3s;}
 .player-tip .turbo-highlight.flash-text { animation: highlightFlash 0.6s ease-out;}
-@keyframes highlightFlash {0%{color:#0ea5a4;transform:scale(1);}50%{color:#a5f3fc;transform:scale(1.1);}100%{color:#0ea5a4;transform:scale(1);} }
+@keyframes highlightFlash {0%{color:#0ea5a4;transform:scale(1);}50%{color:#a5f3fc;transform:scale(1.1);}100%{color:#0ea5a4;transform:scale(1);}}
 
 @media(max-width:900px){ .player-wrap{ flex-direction:column;} .channel{width:45%;} }
 @media(max-width:500px){ .channel{width:90%;} }
@@ -66,7 +64,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 
 <body>
 <header>
-<img src="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" alt="Logo">
+<img src="img/windows_media_player.png" alt="Logo">
 SportPlay TV
 </header>
 
@@ -93,7 +91,6 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 * Velocidad puede variar dependiendo de tu conexión a internet. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente para que no te pierdas de ningún momento.
 </p>
 </div>
-
 </div>
 </div>
 
@@ -128,35 +125,17 @@ function activateChannel(ch, div){
     title.textContent = ch.name;
     currentChannel = ch;
 
+    // Elegir SD o HD automáticamente según velocidad
     const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
-    iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
+    iframe.src = fastConnection ? ch.streams.hd : ch.streams.sd;
 
-    // Flash principal
+    // Flash turbo
     const flash = document.createElement('div');
     flash.className = 'turbo-flash';
     playerFrame.appendChild(flash);
 
-    // Rayitos aleatorios
     for(let i=0;i<3;i++){
         const ray = document.createElement('div');
         ray.className = 'rayito';
         ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
-    }
-
-    setTimeout(()=>flash.remove(),600);
-
-    document.querySelectorAll('.turbo-highlight').forEach(el=>{
-        el.classList.add('flash-text');
-        setTimeout(()=>el.classList.remove('flash-text'),600);
-    });
-}
-
-sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd + "?turbo=1"; };
-hdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.hd + "?turbo=1"; };
-fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
-
-loadChannels();
-</script>
-</body>
-</html>
