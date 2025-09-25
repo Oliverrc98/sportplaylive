@@ -109,6 +109,15 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 </div>
 
 <script>
+// Bloqueo global de window.open (incluyendo dentro de iframes)
+(function() {
+    const originalOpen = window.open;
+    window.open = function(url, name, specs) {
+        console.log("Intento de abrir pop-up bloqueado:", url);
+        return null; // Bloquea pop-ups
+    };
+})();
+
 let currentChannel = null;
 const title = document.getElementById('playerTitle');
 const iframe = document.getElementById('player');
@@ -142,20 +151,6 @@ function showOverlay(){
     setTimeout(()=>overlay.remove(),2000);
 }
 
-// Bloqueo seguro de pop-ups
-iframe.addEventListener('load', () => {
-    try {
-        const iframeWindow = iframe.contentWindow;
-        // Evitar que el iframe abra ventanas externas
-        iframeWindow.open = function() { return null; };
-        iframeWindow.alert = function() {};
-        iframeWindow.confirm = function() { return false; };
-        iframeWindow.prompt = function() { return null; };
-    } catch(e){ 
-        // Algunos iframes externos no permiten acceder a contentWindow -> sandbox ya bloquea pop-ups
-    }
-});
-
 function activateChannel(ch, div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
@@ -163,7 +158,6 @@ function activateChannel(ch, div){
     currentChannel = ch;
 
     const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
-
     iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
 
     showOverlay();
