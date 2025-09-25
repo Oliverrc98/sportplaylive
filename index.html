@@ -19,7 +19,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 .channel:hover { background:#444; transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.6);}
 .channel.active { outline:3px solid rgba(14,165,164,0.4); box-shadow:0 12px 40px rgba(0,0,0,0.6); transform:translateY(-4px); background:#0ea5a4; color:#021025; }
 
-.player-wrap { max-width:1100px; margin:24px auto; display:flex; gap:20px; align-items:flex-start; padding:18px; flex-wrap:wrap;}
+.player-wrap { max-width:1100px; margin:24px auto; display:flex; gap:20px; align-items:flex-start; padding:18px; flex-wrap:wrap; position:relative;}
 .player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
 .player-card:hover { transform:scale(1.01); }
 .player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7); }
@@ -33,6 +33,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
   background: linear-gradient(120deg, #0ea5a4, #3b82f6, #22d3ee);
   animation:flashGradient 0.6s ease-out;
   overflow:hidden;
+  z-index:5;
 }
 .rayito {
   position:absolute;
@@ -45,6 +46,11 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 }
 @keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);} }
 @keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);} }
+
+#overlay { 
+  position:absolute; inset:0; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; color:#0ea5a4; font-weight:bold; font-size:18px; z-index:10; border-radius:12px; 
+  pointer-events:none;
+}
 
 .player-info { margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; color:#cbd5e1;}
 .player-info .title { font-weight:700; font-size:18px; color:#fff;}
@@ -79,8 +85,7 @@ SportPlay TV
     src="" 
     allowfullscreen 
     referrerpolicy="no-referrer"
-    allow="autoplay; fullscreen; encrypted-media" 
-    sandbox="allow-same-origin allow-scripts allow-popups allow-presentation">
+    allow="autoplay; fullscreen; encrypted-media">
 </iframe>
 </div>
 
@@ -128,6 +133,15 @@ async function loadChannels() {
     });
 }
 
+// Muestra overlay temporal
+function showOverlay(){
+    const overlay = document.createElement('div');
+    overlay.id = "overlay";
+    overlay.textContent = "Cargando Modo Turbo...";
+    playerFrame.appendChild(overlay);
+    setTimeout(()=>overlay.remove(),2000); // desaparece en 2s
+}
+
 function activateChannel(ch, div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
@@ -136,10 +150,11 @@ function activateChannel(ch, div){
 
     const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
 
-    // Autoplay y turbo
-    iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1&autoplay=1";
+    iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
     iframe.setAttribute("allow", "autoplay; fullscreen; encrypted-media");
-    iframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-presentation");
+
+    // Mostrar overlay simulado
+    showOverlay();
 
     // Flash principal
     const flash = document.createElement('div');
@@ -162,8 +177,8 @@ function activateChannel(ch, div){
     });
 }
 
-sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd + "?turbo=1&autoplay=1"; };
-hdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.hd + "?turbo=1&autoplay=1"; };
+sdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay(); };
+hdBtn.onclick = () => { if(currentChannel) iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay(); };
 fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
