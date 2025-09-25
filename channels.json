@@ -1,0 +1,128 @@
+[
+  {
+    "name": "DSports",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=dsports&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=dsports&quality=sd"
+    }
+  },
+  {
+    "name": "Liga 1 Max",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=liga1max&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=liga1max&quality=sd"
+    }
+  },
+  {
+    "name": "D Sports+",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=dsportsplus&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=dsportsplus&quality=sd"
+    }
+  },
+  {
+    "name": "TNT Sports",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=tntsports&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=tntsports&quality=sd"
+    }
+  },
+  {
+    "name": "GOLPERU",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=golperu&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=golperu&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN Premium",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espnpremium&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espnpremium&quality=sd"
+    }
+  },
+  {
+    "name": "Tigo Sports",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=tigosports&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=tigosports&quality=sd"
+    }
+  },
+  {
+    "name": "Win Sports+",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=winsportsplus&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=winsportsplus&quality=sd"
+    }
+  },
+  {
+    "name": "TYC Sports",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=tycsports&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=tycsports&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 2",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn2&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn2&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 3",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn3&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn3&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 4",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn4&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn4&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 5",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn5&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn5&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 6",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn6&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn6&quality=sd"
+    }
+  },
+  {
+    "name": "ESPN 7",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=espn7&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=espn7&quality=sd"
+    }
+  },
+  {
+    "name": "Fox Sports 2",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=foxsports2&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=foxsports2&quality=sd"
+    }
+  },
+  {
+    "name": "Gol TV",
+    "streams": {
+      "hd": "https://la14hd.com/vivo/canal.php?stream=goltv&quality=hd",
+      "sd": "https://la14hd.com/vivo/canal.php?stream=goltv&quality=sd"
+    }
+  }
+]
