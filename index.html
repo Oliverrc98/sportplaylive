@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>SportPlay TV</title>
+<title>SportPlay TV Ultra Turbo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" href="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" type="image/png">
@@ -117,11 +117,10 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 (function() {
     const originalOpen = window.open;
     window.open = function(url, name, specs) {
-        console.log("Intento de abrir pop-up bloqueado:", url);
         const ad = document.getElementById('adBlocked');
         ad.style.display='block';
         setTimeout(()=>ad.style.display='none',1500);
-        return null; // Bloquea pop-ups
+        return null; 
     };
 })();
 
@@ -145,12 +144,11 @@ async function loadChannels() {
         div.onclick = () => activateChannel(ch, div);
         list.appendChild(div);
 
-        if(index === 0) activateChannel(ch, div);
+        if(index === 0) activateChannel(ch, div, true);
     });
 }
 
-// Overlay temporal
-function showOverlay(text="Cargando Modo Turbo..."){
+function showOverlay(text="Cargando..."){
     const overlay = document.createElement('div');
     overlay.id = "overlay";
     overlay.textContent = text;
@@ -158,14 +156,16 @@ function showOverlay(text="Cargando Modo Turbo..."){
     setTimeout(()=>overlay.remove(),1500);
 }
 
-function activateChannel(ch, div){
+function activateChannel(ch, div, initial=false){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
     title.textContent = ch.name;
     currentChannel = ch;
 
-    // Cargar inicialmente según conexión
-    setStreamByConnection();
+    // Mostrar Modo Turbo al inicio
+    if(initial) showOverlay("Activando Modo Turbo...");
+
+    setStreamByConnection(true);
 
     // Flash principal
     const flash = document.createElement('div');
@@ -186,12 +186,16 @@ function activateChannel(ch, div){
     });
 }
 
-// Cambia HD/SD según conexión automáticamente
-function setStreamByConnection(){
+// Ultra Turbo: cambia SD/HD sin reiniciar iframe
+function setStreamByConnection(showMessage=false){
     if(!currentChannel) return;
     const speed = navigator.connection ? navigator.connection.downlink : 5;
-    const chosen = speed >= 5 ? currentChannel.streams.hd : currentChannel.streams.sd;
-    iframe.src = chosen + "?turbo=1";
+    const newSrc = speed >=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
+
+    if(iframe.src !== newSrc+"?turbo=1"){
+        if(showMessage) showOverlay("Cargando "+(speed>=5?"HD":"SD")+"...");
+        iframe.src = newSrc+"?turbo=1";
+    }
 }
 
 // Botones manuales
@@ -200,7 +204,7 @@ hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams
 fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 // Detecta cambios de conexión y ajusta automáticamente cada 5 segundos
-setInterval(setStreamByConnection,5000);
+setInterval(()=>setStreamByConnection(),5000);
 
 loadChannels();
 </script>
