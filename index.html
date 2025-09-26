@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>SportPlay TV Ultra Turbo</title>
+<title>SportPlay TV Ultra Turbo Smooth</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" href="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" type="image/png">
@@ -23,7 +23,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 .player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
 .player-card:hover { transform:scale(1.01); }
 .player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7); }
-.player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; transition:opacity 0.3s ease; }
 
 .turbo-flash {
   position:absolute;
@@ -72,7 +72,6 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 @media(max-width:500px){ .channel{width:90%;} }
 </style>
 </head>
-
 <body>
 <header>
 <img src="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" alt="Logo">
@@ -84,12 +83,8 @@ SportPlay TV
 <div class="player-wrap">
 <div class="player-card">
 <div class="player-frame" id="playerFrame">
-<iframe 
-    id="player" 
-    src="" 
-    allowfullscreen 
-    referrerpolicy="no-referrer">
-</iframe>
+<iframe id="player" allowfullscreen referrerpolicy="no-referrer" style="opacity:1;"></iframe>
+<iframe id="playerBuffer" allowfullscreen referrerpolicy="no-referrer" style="opacity:0;position:absolute;inset:0;"></iframe>
 <div id="adBlocked">Anuncio bloqueado 🚫</div>
 </div>
 
@@ -115,67 +110,65 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 <script>
 // Bloqueo global de pop-ups
 (function() {
-    const originalOpen = window.open;
     window.open = function(url, name, specs) {
         const ad = document.getElementById('adBlocked');
         ad.style.display='block';
         setTimeout(()=>ad.style.display='none',1500);
-        return null; 
+        return null;
     };
 })();
 
 let currentChannel = null;
 const title = document.getElementById('playerTitle');
 const iframe = document.getElementById('player');
+const buffer = document.getElementById('playerBuffer');
 const playerFrame = document.getElementById('playerFrame');
 const sdBtn = document.getElementById('sdBtn');
 const hdBtn = document.getElementById('hdBtn');
 const fsBtn = document.getElementById('fsBtn');
 
-async function loadChannels() {
+async function loadChannels(){
     const response = await fetch('channels.json');
     const channels = await response.json();
     const list = document.getElementById('channelList');
 
-    channels.forEach((ch, index) => {
-        const div = document.createElement('div');
-        div.className = 'channel';
-        div.textContent = ch.name;
-        div.onclick = () => activateChannel(ch, div);
+    channels.forEach((ch,index)=>{
+        const div=document.createElement('div');
+        div.className='channel';
+        div.textContent=ch.name;
+        div.onclick=()=>activateChannel(ch,div,true);
         list.appendChild(div);
-
-        if(index === 0) activateChannel(ch, div, true);
+        if(index===0) activateChannel(ch,div,true);
     });
 }
 
 function showOverlay(text="Cargando..."){
-    const overlay = document.createElement('div');
-    overlay.id = "overlay";
-    overlay.textContent = text;
+    const overlay=document.createElement('div');
+    overlay.id="overlay";
+    overlay.textContent=text;
     playerFrame.appendChild(overlay);
     setTimeout(()=>overlay.remove(),1500);
 }
 
-function activateChannel(ch, div, initial=false){
+// Ultra Turbo + Smooth Swap
+function activateChannel(ch,div,initial=false){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
-    title.textContent = ch.name;
-    currentChannel = ch;
+    title.textContent=ch.name;
+    currentChannel=ch;
 
-    // Mostrar Modo Turbo al inicio
     if(initial) showOverlay("Activando Modo Turbo...");
 
     setStreamByConnection(true);
 
     // Flash principal
-    const flash = document.createElement('div');
-    flash.className = 'turbo-flash';
+    const flash=document.createElement('div');
+    flash.className='turbo-flash';
     playerFrame.appendChild(flash);
-
     for(let i=0;i<3;i++){
-        const ray = document.createElement('div');
-        ray.className = 'rayito';
-        ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
+        const ray=document.createElement('div');
+        ray.className='rayito';
+        ray.style.animation=`lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
     }
     setTimeout(()=>flash.remove(),600);
@@ -186,24 +179,37 @@ function activateChannel(ch, div, initial=false){
     });
 }
 
-// Ultra Turbo: cambia SD/HD sin reiniciar iframe
+// Cambia SD/HD sin corte
 function setStreamByConnection(showMessage=false){
     if(!currentChannel) return;
-    const speed = navigator.connection ? navigator.connection.downlink : 5;
-    const newSrc = speed >=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
+    const speed=navigator.connection ? navigator.connection.downlink : 5;
+    const newSrc=speed>=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
 
-    if(iframe.src !== newSrc+"?turbo=1"){
+    if(iframe.src!==newSrc+"?turbo=1"){
         if(showMessage) showOverlay("Cargando "+(speed>=5?"HD":"SD")+"...");
-        iframe.src = newSrc+"?turbo=1";
+        // Carga en buffer
+        buffer.src=newSrc+"?turbo=1";
+        buffer.onload=function(){
+            // Swap suave
+            iframe.style.opacity=0;
+            buffer.style.opacity=1;
+            setTimeout(()=>{
+                const temp=iframe.src;
+                iframe.src=buffer.src;
+                iframe.style.opacity=1;
+                buffer.style.opacity=0;
+                buffer.src="about:blank";
+            },100);
+        };
     }
 }
 
 // Botones manuales
-sdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay("Cargando SD..."); } };
-hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay("Cargando HD..."); } };
-fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
+sdBtn.onclick=()=>{ if(currentChannel){ buffer.src=currentChannel.streams.sd+"?turbo=1"; showOverlay("Cargando SD..."); setStreamByConnection(); } };
+hdBtn.onclick=()=>{ if(currentChannel){ buffer.src=currentChannel.streams.hd+"?turbo=1"; showOverlay("Cargando HD..."); setStreamByConnection(); } };
+fsBtn.onclick=()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
-// Detecta cambios de conexión y ajusta automáticamente cada 5 segundos
+// Ajusta conexión cada 5s
 setInterval(()=>setStreamByConnection(),5000);
 
 loadChannels();
