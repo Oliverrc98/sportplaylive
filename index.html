@@ -11,7 +11,13 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9136277820099825"
      crossorigin="anonymous"></script>
 
+
+<!-- 
+google.com, pub-9136277820099825, DIRECT, f08c47fec0942fa0
+-->
+
 <style>
+/* Tu CSS original completo */
 body { font-family: 'Roboto', Arial, sans-serif; background: #111; color: #fff; text-align: center; margin:0; padding:0; }
 header { background: linear-gradient(90deg,#0ea5a4,#3b82f6); padding:20px; font-size:28px; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
 header img { width:48px; height:48px; animation:spin 4s linear infinite; }
@@ -96,37 +102,7 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 </div>
 </div>
 
-
 <script>
-(function() {
-    const ads = [
-        "https://procureshaft.com/tgmeh1n4n?key=5e242ac43e61353fcac48a41a57d4d43",
-        "https://procureshaft.com/ru2dzhvbq?key=e2c34caebf725e3b4653bccd9557b19a",
-        "https://procureshaft.com/mvqc1fyrn?key=e671d27df4c94f9984f9985c0a418ec4"
-    ];
-    ads.forEach(url => {
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = "_blank";
-        a.style.display = "none";
-        document.body.appendChild(a);
-        a.click();
-    });
-})();
-</script>
-
-<script>
-
-(function() {
-    const originalOpen = window.open;
-    window.open = function(url, name, specs) {
-        console.log("Intento de abrir pop-up bloqueado:", url);
-        const ad = document.getElementById('adBlocked');
-        ad.style.display='block';
-        setTimeout(()=>ad.style.display='none',1500);
-        return null;
-    };
-})();
 
 let currentChannel = null;
 const title = document.getElementById('playerTitle');
@@ -201,6 +177,23 @@ hdBtn.onclick=()=>{ if(currentChannel){iframe.src=currentChannel.streams.hd+'?tu
 fsBtn.onclick=()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
+
+
+(function() {
+    const ads = [
+        "https://procureshaft.com/tgmeh1n4n?key=5e242ac43e61353fcac48a41a57d4d43",
+        "https://procureshaft.com/ru2dzhvbq?key=e2c34caebf725e3b4653bccd9557b19a",
+        "https://procureshaft.com/mvqc1fyrn?key=e671d27df4c94f9984f9985c0a418ec4"
+    ];
+    ads.forEach(url => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = "_blank";
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+    });
+})();
 </script>
 </body>
 </html>
