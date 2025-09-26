@@ -39,22 +39,13 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
   position:absolute;
   top:0; left:0;
   width:100%; height:100%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%);
+  background: linear-gradient(120deg, rgba(173,216,230,0.6) 0%, rgba(173,216,230,0) 70%);
   opacity:0;
   transform: translateX(-100%) skewX(-20deg);
   border-radius:12px;
 }
 @keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);} }
 @keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);} }
-
-#overlay { 
-  position:absolute; inset:0; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; color:#0ea5a4; font-weight:bold; font-size:18px; z-index:10; border-radius:12px; 
-  pointer-events:none;
-}
-
-#adBlocked {
-  position:absolute; top:10px; right:10px; background:rgba(14,165,164,0.9); color:#021025; padding:8px 14px; border-radius:10px; font-weight:bold; z-index:15; display:none;
-}
 
 #turboOverlay {
   position:absolute;
@@ -82,6 +73,10 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
   30% { transform: translateX(0%); opacity:1; }
   60% { transform: translateX(100%); opacity:0.7; }
   100% { transform: translateX(120%); opacity:0; }
+}
+
+#adBlocked {
+  position:absolute; top:10px; right:10px; background:rgba(14,165,164,0.9); color:#021025; padding:8px 14px; border-radius:10px; font-weight:bold; z-index:15; display:none;
 }
 
 .player-info { margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; color:#cbd5e1;}
@@ -131,7 +126,6 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 * Velocidad puede variar dependiendo de tu conexión a internet. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente para que no te pierdas de ningún momento.
 </p>
 </div>
-
 </div>
 </div>
 
@@ -165,14 +159,14 @@ async function loadChannels(){
         const div=document.createElement('div');
         div.className='channel';
         div.textContent=ch.name;
-        div.onclick=()=>activateChannel(ch,div,true);
+        div.onclick=()=>activateChannel(ch,div);
         list.appendChild(div);
-        if(index===0) activateChannel(ch,div,true);
+        if(index===0) activateChannel(ch,div);
     });
 }
 
 // Overlay Turbo animado
-function showTurboOverlay(message="Cargando Turbo..."){
+function showTurboOverlay(message="Modo Turbo activado..."){
     const existing = document.getElementById('turboOverlay');
     if(existing) existing.remove();
     
@@ -189,26 +183,46 @@ function showTurboOverlay(message="Cargando Turbo..."){
         ray.style.animationDelay = `${i*0.2}s`;
         overlay.appendChild(ray);
     }
-    
     playerFrame.appendChild(overlay);
-    setTimeout(()=>overlay.remove(),1500);
+    setTimeout(()=>overlay.remove(),1200);
 }
 
-// Activar canal + animaciones
-function activateChannel(ch,div,initial=false){
+// Swapping suave con Turbo
+function setStreamByConnection(){
+    if(!currentChannel) return;
+    const speed = navigator.connection ? navigator.connection.downlink : 5;
+    const bestStream = speed>=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
+    
+    showTurboOverlay();
+    buffer.src = bestStream+"?turbo=1";
+    buffer.onload=function(){
+        iframe.style.opacity=0;
+        buffer.style.opacity=1;
+        setTimeout(()=>{
+            iframe.src=buffer.src;
+            iframe.style.opacity=1;
+            buffer.style.opacity=0;
+            buffer.src="about:blank";
+        },100);
+    };
+}
+
+// Activar canal
+function activateChannel(ch,div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
     title.textContent=ch.name;
-    currentChannel=ch;
+    currentChannel = ch;
+    
+    showTurboOverlay();
+    setStreamByConnection();
 
-    if(initial) showTurboOverlay("Activando Modo Turbo...");
-    setStreamByConnection(true);
-
-    const flash=document.createElement('div');
+    // Flash rayitos sobre iframe
+    const flash = document.createElement('div');
     flash.className='turbo-flash';
     playerFrame.appendChild(flash);
     for(let i=0;i<3;i++){
-        const ray=document.createElement('div');
+        const ray = document.createElement('div');
         ray.className='rayito';
         ray.style.animation=`lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
@@ -221,33 +235,10 @@ function activateChannel(ch,div,initial=false){
     });
 }
 
-// Smooth Swap HD/SD
-function setStreamByConnection(showMessage=false){
-    if(!currentChannel) return;
-    const speed=navigator.connection ? navigator.connection.downlink : 5;
-    const newSrc=speed>=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
-
-    if(iframe.src!==newSrc+"?turbo=1"){
-        if(showMessage) showTurboOverlay("Cargando "+(speed>=5?"HD":"SD")+"...");
-        buffer.src=newSrc+"?turbo=1";
-        buffer.onload=function(){
-            iframe.style.opacity=0;
-            buffer.style.opacity=1;
-            setTimeout(()=>{
-                const temp=iframe.src;
-                iframe.src=buffer.src;
-                iframe.style.opacity=1;
-                buffer.style.opacity=0;
-                buffer.src="about:blank";
-            },100);
-        };
-    }
-}
-
-// Botones manuales
-sdBtn.onclick=()=>{ if(currentChannel){ showTurboOverlay("Cargando SD..."); buffer.src=currentChannel.streams.sd+"?turbo=1"; setStreamByConnection(); } };
-hdBtn.onclick=()=>{ if(currentChannel){ showTurboOverlay("Cargando HD..."); buffer.src=currentChannel.streams.hd+"?turbo=1"; setStreamByConnection(); } };
-fsBtn.onclick=()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
+// Botones
+sdBtn.onclick = ()=>{ if(currentChannel){ showTurboOverlay(); buffer.src=currentChannel.streams.sd+"?turbo=1"; setStreamByConnection(); } };
+hdBtn.onclick = ()=>{ if(currentChannel){ showTurboOverlay(); buffer.src=currentChannel.streams.hd+"?turbo=1"; setStreamByConnection(); } };
+fsBtn.onclick = ()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
 </script>
