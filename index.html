@@ -150,10 +150,10 @@ async function loadChannels() {
 }
 
 // Overlay temporal
-function showOverlay(){
+function showOverlay(text="Cargando Modo Turbo..."){
     const overlay = document.createElement('div');
     overlay.id = "overlay";
-    overlay.textContent = "Cargando Modo Turbo...";
+    overlay.textContent = text;
     playerFrame.appendChild(overlay);
     setTimeout(()=>overlay.remove(),1500);
 }
@@ -164,24 +164,20 @@ function activateChannel(ch, div){
     title.textContent = ch.name;
     currentChannel = ch;
 
-    const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
-    iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
-
-    showOverlay();
+    // Cargar inicialmente según conexión
+    setStreamByConnection();
 
     // Flash principal
     const flash = document.createElement('div');
     flash.className = 'turbo-flash';
     playerFrame.appendChild(flash);
 
-    // Rayitos aleatorios
     for(let i=0;i<3;i++){
         const ray = document.createElement('div');
         ray.className = 'rayito';
         ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
     }
-
     setTimeout(()=>flash.remove(),600);
 
     document.querySelectorAll('.turbo-highlight').forEach(el=>{
@@ -190,9 +186,21 @@ function activateChannel(ch, div){
     });
 }
 
-sdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay(); } };
-hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay(); } };
+// Cambia HD/SD según conexión automáticamente
+function setStreamByConnection(){
+    if(!currentChannel) return;
+    const speed = navigator.connection ? navigator.connection.downlink : 5;
+    const chosen = speed >= 5 ? currentChannel.streams.hd : currentChannel.streams.sd;
+    iframe.src = chosen + "?turbo=1";
+}
+
+// Botones manuales
+sdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay("Cargando SD..."); } };
+hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay("Cargando HD..."); } };
 fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
+
+// Detecta cambios de conexión y ajusta automáticamente cada 5 segundos
+setInterval(setStreamByConnection,5000);
 
 loadChannels();
 </script>
