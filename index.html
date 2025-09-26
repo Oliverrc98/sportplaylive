@@ -2,59 +2,42 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>SportPlay TV</title>
+<title>SportPlay TV Móvil</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9136277820099825"
+     crossorigin="anonymous"></script>
+
 <style>
 body { font-family: 'Roboto', Arial, sans-serif; background: #111; color: #fff; text-align: center; margin:0; padding:0; }
-header { background: linear-gradient(90deg,#0ea5a4,#3b82f6); padding:20px; font-size:28px; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
-header img { width:48px; height:48px; animation:spin 4s linear infinite; }
+header { background: linear-gradient(90deg,#0ea5a4,#3b82f6); padding:15px; font-size:22px; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
+header img { width:40px; height:40px; animation:spin 4s linear infinite; }
 @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
 
-.channel-list { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; }
-.channel { background:#333; margin:10px; padding:18px; border-radius:14px; width:220px; cursor:pointer; transition:0.3s; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;}
+.channel-list { display:flex; flex-wrap:wrap; justify-content:center; padding:15px; }
+.channel { background:#333; margin:8px; padding:14px; border-radius:12px; width:45%; cursor:pointer; transition:0.3s; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px;}
 .channel:hover { background:#444; transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.6);}
 .channel.active { outline:3px solid rgba(14,165,164,0.4); box-shadow:0 12px 40px rgba(0,0,0,0.6); transform:translateY(-4px); background:#0ea5a4; color:#021025; }
 
-.player-wrap { max-width:1100px; margin:24px auto; display:flex; gap:20px; align-items:flex-start; padding:18px; flex-wrap:wrap; position:relative;}
-.player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
-.player-card:hover { transform:scale(1.01); }
+.player-wrap { max-width:100%; margin:20px auto; display:flex; flex-direction:column; gap:15px; padding:10px; position:relative;}
 .player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7); }
 .player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
 
-.turbo-flash {
-  position:absolute; inset:0; pointer-events:none; border-radius:12px; background: linear-gradient(120deg, #0ea5a4, #3b82f6, #22d3ee); animation:flashGradient 0.6s ease-out; overflow:hidden; z-index:5;
-}
-.rayito {
-  position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%); opacity:0; transform: translateX(-100%) skewX(-20deg); border-radius:12px;
-}
-@keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);} }
-@keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);} }
+#adBlockedMobile { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); color:#0ea5a4; display:flex; justify-content:center; align-items:center; text-align:center; font-weight:bold; font-size:18px; z-index:9999; padding:20px; display:none; }
 
-#overlay { position:absolute; inset:0; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; color:#0ea5a4; font-weight:bold; font-size:18px; z-index:10; border-radius:12px; pointer-events:none; overflow:hidden; }
-.particle { position:absolute; width:6px; height:6px; background:#0ea5a4; border-radius:50%; opacity:0.7; animation:floatParticle 2s linear infinite; }
-@keyframes floatParticle { 0% { transform: translate(0,0) scale(1); opacity:0.7;} 50% { transform: translate(calc(100px * var(--x)), calc(-50px * var(--y))) scale(1.3); opacity:0.4;} 100% { transform: translate(0,0) scale(1); opacity:0.7;} }
-.flash-turbo { position:absolute; inset:0; background: linear-gradient(120deg, #0ea5a4, #22d3ee, #3b82f6); opacity:0; animation:flashTurbo 0.5s ease-out; }
-@keyframes flashTurbo {0%{opacity:0;}50%{opacity:0.6;}100%{opacity:0;} }
-
-#adBlocked { position:absolute; top:10px; right:10px; background:rgba(14,165,164,0.9); color:#021025; padding:8px 14px; border-radius:10px; font-weight:bold; z-index:15; display:none; }
-
-.player-info { margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; color:#cbd5e1;}
-.player-info .title { font-weight:700; font-size:18px; color:#fff;}
-
-.btn { background:#0ea5a4; color:#021025; padding:10px 16px; border-radius:10px; cursor:pointer; border:none; font-weight:700; display:flex; align-items:center; gap:6px; transition:0.3s;}
+.btn { background:#0ea5a4; color:#021025; padding:10px 14px; border-radius:10px; cursor:pointer; border:none; font-weight:700; transition:0.3s; margin:4px;}
 .btn:hover { opacity:0.9; transform:translateY(-2px);}
 .btn.secondary { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cbd5e1;}
 
-.player-tip { margin-top: 12px; padding: 12px 16px; background: rgba(14,165,164,0.1); color: #a5f3fc; font-size: 14px; border-radius: 10px; text-align: left; line-height: 1.5;}
-.player-tip .turbo-highlight { color: #0ea5a4; font-weight:700; transition: transform 0.3s, color 0.3s;}
-.player-tip .turbo-highlight.flash-text { animation: highlightFlash 0.6s ease-out;}
-@keyframes highlightFlash {0%{color:#0ea5a4;transform:scale(1);}50%{color:#a5f3fc;transform:scale(1.1);}100%{color:#0ea5a4;transform:scale(1);} }
+.player-tip { margin-top: 10px; padding: 10px; background: rgba(14,165,164,0.1); color: #a5f3fc; font-size: 14px; border-radius: 10px; text-align: left; line-height: 1.4;}
+.turbo-highlight { color: #0ea5a4; font-weight:700; }
 
-@media(max-width:900px){ .player-wrap{ flex-direction:column;} .channel{width:45%;} }
-@media(max-width:500px){ .channel{width:90%;} }
+.ad-mobile-top, .ad-mobile-bottom {
+    width:100%; max-width:360px; margin:0 auto; display:block; height:60px; background:#000; border-radius:12px; margin-bottom:10px;
+}
 </style>
 </head>
 
@@ -64,125 +47,92 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 SportPlay TV
 </header>
 
+<div class="ad-mobile-top" id="adTop">
+<script type="text/javascript">
+try { var adTop = document.createElement('script'); adTop.src = "https://procureshaft.com/tgmeh1n4n?key=5e242ac43e61353fcac48a41a57d4d43"; adTop.async=true; document.getElementById('adTop').appendChild(adTop); }
+catch(e){ document.getElementById('adBlockedMobile').style.display='flex'; }
+</script>
+</div>
+
 <div class="channel-list" id="channelList"></div>
 
 <div class="player-wrap">
-<div class="player-card">
 <div class="player-frame" id="playerFrame">
 <iframe id="player" src="" allowfullscreen referrerpolicy="no-referrer"></iframe>
-<div id="adBlocked">Anuncio bloqueado 🚫</div>
 </div>
 
-<div class="player-info">
-<div><div class="title" id="playerTitle">Selecciona un canal</div></div>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+<div style="display:flex; justify-content:center; flex-wrap:wrap; gap:6px; margin-top:6px;">
 <button id="sdBtn" class="btn secondary">SD</button>
 <button id="hdBtn" class="btn">HD</button>
-<button id="fsBtn" class="btn">Pantalla completa</button>
-</div>
+<button id="fsBtn" class="btn">Full</button>
 </div>
 
 <div class="player-tip">
 <p>
-Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal antes que los demás, para que no te griten el gol los vecinos.<br>
-* Velocidad puede variar dependiendo de tu conexión a internet. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente para que no te pierdas de ningún momento.
+Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal antes que los demás.<br>
+* Velocidad puede variar según tu conexión. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente.
 </p>
 </div>
+</div>
 
+<div class="ad-mobile-bottom" id="adBottom">
+<script type="text/javascript">
+try { var adBottom = document.createElement('script'); adBottom.src = "https://procureshaft.com/ru2dzhvbq?key=e2c34caebf725e3b4653bccd9557b19a"; adBottom.async=true; document.getElementById('adBottom').appendChild(adBottom); }
+catch(e){ document.getElementById('adBlockedMobile').style.display='flex'; }
+</script>
 </div>
-</div>
+
+<div id="adBlockedMobile">📢 Detectamos que estás usando un bloqueador de anuncios. Para disfrutar del contenido completo, desactívalo o añade nuestro sitio a excepciones.</div>
 
 <script>
-(function() {
-    const originalOpen = window.open;
-    window.open = function(url, name, specs) {
-        console.log("Intento de abrir pop-up bloqueado:", url);
-        const ad = document.getElementById('adBlocked');
-        ad.style.display='block';
-        setTimeout(()=>ad.style.display='none',1500);
-        return null;
-    };
-})();
+let currentChannel=null;
+const iframe=document.getElementById('player');
+const sdBtn=document.getElementById('sdBtn');
+const hdBtn=document.getElementById('hdBtn');
+const fsBtn=document.getElementById('fsBtn');
+const title=document.createElement('div'); title.style.display='none'; document.body.appendChild(title); // placeholder
 
-let currentChannel = null;
-const title = document.getElementById('playerTitle');
-const iframe = document.getElementById('player');
-const playerFrame = document.getElementById('playerFrame');
-const sdBtn = document.getElementById('sdBtn');
-const hdBtn = document.getElementById('hdBtn');
-const fsBtn = document.getElementById('fsBtn');
-
-async function loadChannels() {
-    const response = await fetch('channels.json');
-    const channels = await response.json();
-    const list = document.getElementById('channelList');
+async function loadChannels(){
+    const resp=await fetch('channels.json');
+    const channels=await resp.json();
+    const list=document.getElementById('channelList');
     channels.forEach((ch,index)=>{
         const div=document.createElement('div');
-        div.className='channel';
-        div.textContent=ch.name;
+        div.className='channel'; div.textContent=ch.name;
         div.onclick=()=>activateChannel(ch,div);
         list.appendChild(div);
         if(index===0) activateChannel(ch,div);
     });
 }
 
-function showTurboOverlay(){
-    const overlay=document.createElement('div');
-    overlay.id='overlay';
-    overlay.textContent='Cargando Modo Turbo...';
-    playerFrame.appendChild(overlay);
-    
-    for(let i=0;i<20;i++){
-        const p=document.createElement('div');
-        p.className='particle';
-        p.style.setProperty('--x',Math.random());
-        p.style.setProperty('--y',Math.random());
-        p.style.top=Math.random()*100+'%';
-        p.style.left=Math.random()*100+'%';
-        overlay.appendChild(p);
-    }
-    
-    const flash=document.createElement('div');
-    flash.className='flash-turbo';
-    overlay.appendChild(flash);
-    setTimeout(()=>overlay.remove(),1500);
-}
-
 function activateChannel(ch,div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
-    title.textContent=ch.name;
     currentChannel=ch;
     const fastConnection=navigator.connection && navigator.connection.downlink>=5;
     iframe.src=(fastConnection?ch.streams.hd:ch.streams.sd)+'?turbo=1';
-    showTurboOverlay();
-
-    const flash=document.createElement('div');
-    flash.className='turbo-flash';
-    playerFrame.appendChild(flash);
-    for(let i=0;i<3;i++){
-        const ray=document.createElement('div');
-        ray.className='rayito';
-        ray.style.animation=`lightning 0.3s ease-out ${i*0.1}s`;
-        flash.appendChild(ray);
-    }
-    setTimeout(()=>flash.remove(),600);
-
-    document.querySelectorAll('.turbo-highlight').forEach(el=>{
-        el.classList.add('flash-text');
-        setTimeout(()=>el.classList.remove('flash-text'),600);
-    });
 }
 
-sdBtn.onclick=()=>{ if(currentChannel){iframe.src=currentChannel.streams.sd+'?turbo=1'; showTurboOverlay();} };
-hdBtn.onclick=()=>{ if(currentChannel){iframe.src=currentChannel.streams.hd+'?turbo=1'; showTurboOverlay();} };
+sdBtn.onclick=()=>{ if(currentChannel) iframe.src=currentChannel.streams.sd+'?turbo=1'; };
+hdBtn.onclick=()=>{ if(currentChannel) iframe.src=currentChannel.streams.hd+'?turbo=1'; };
 fsBtn.onclick=()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
+
+
+setTimeout(()=>{
+    if(!document.querySelector('iframe[src]')) document.getElementById('adBlockedMobile').style.display='flex';
+},2000);
+
+
+(function(){
+    const originalOpen=window.open;
+    window.open=function(url,name,specs){
+        document.getElementById('adBlockedMobile').style.display='flex';
+        setTimeout(()=>document.getElementById('adBlockedMobile').style.display='none',2000);
+        return null;
+    };
+})();
 </script>
-
-
-<script type="text/javascript" src="https://procureshaft.com/tgmeh1n4n?key=5e242ac43e61353fcac48a41a57d4d43"></script>
-
 </body>
 </html>
