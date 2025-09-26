@@ -166,7 +166,7 @@ async function loadChannels(){
 }
 
 // Overlay Turbo animado
-function showTurboOverlay(message="Modo Turbo activado..."){
+function showTurboOverlay(message="Activando Modo Turbo..."){
     const existing = document.getElementById('turboOverlay');
     if(existing) existing.remove();
     
@@ -187,14 +187,12 @@ function showTurboOverlay(message="Modo Turbo activado..."){
     setTimeout(()=>overlay.remove(),1200);
 }
 
-// Swapping suave con Turbo
+// Swapping suave con Turbo (solo mensaje Modo Turbo)
 function setStreamByConnection(){
     if(!currentChannel) return;
-    const speed = navigator.connection ? navigator.connection.downlink : 5;
-    const bestStream = speed>=5 ? currentChannel.streams.hd : currentChannel.streams.sd;
-    
+
     showTurboOverlay();
-    buffer.src = bestStream+"?turbo=1";
+    buffer.src = currentChannel.streams.hd+"?turbo=1"; // siempre la mejor señal
     buffer.onload=function(){
         iframe.style.opacity=0;
         buffer.style.opacity=1;
@@ -214,7 +212,7 @@ function activateChannel(ch,div){
     title.textContent=ch.name;
     currentChannel = ch;
     
-    showTurboOverlay();
+    showTurboOverlay();   // "Activando Modo Turbo..."
     setStreamByConnection();
 
     // Flash rayitos sobre iframe
@@ -229,6 +227,7 @@ function activateChannel(ch,div){
     }
     setTimeout(()=>flash.remove(),600);
 
+    // Animación palabras clave en tip
     document.querySelectorAll('.turbo-highlight').forEach(el=>{
         el.classList.add('flash-text');
         setTimeout(()=>el.classList.remove('flash-text'),600);
