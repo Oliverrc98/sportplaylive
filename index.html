@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>SportPlay TV Ultra Turbo</title>
+<title>SportPlay TV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" href="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" type="image/png">
@@ -23,7 +23,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 .player-card { flex:1; background: linear-gradient(180deg,#071021,#0b1220); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6); transition:0.3s; position:relative;}
 .player-card:hover { transform:scale(1.01); }
 .player-frame { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 8px 20px rgba(0,0,0,0.7); }
-.player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; transition:opacity 0.3s ease; }
+.player-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
 
 .turbo-flash {
   position:absolute;
@@ -39,7 +39,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
   position:absolute;
   top:0; left:0;
   width:100%; height:100%;
-  background: linear-gradient(120deg, rgba(173,216,230,0.6) 0%, rgba(173,216,230,0) 70%);
+  background: linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%);
   opacity:0;
   transform: translateX(-100%) skewX(-20deg);
   border-radius:12px;
@@ -47,32 +47,9 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 @keyframes flashGradient {0%{opacity:0; transform:scale(1);}30%{opacity:0.7; transform:scale(1.05);}60%{opacity:0.5; transform:scale(1.08);}100%{opacity:0; transform:scale(1);} }
 @keyframes lightning {0%{opacity:0; transform:translateX(-100%) skewX(-20deg);}30%{opacity:1; transform:translateX(50%) skewX(-20deg);}60%{opacity:0.8; transform:translateX(80%) skewX(-20deg);}100%{opacity:0; transform:translateX(120%) skewX(-20deg);} }
 
-#turboOverlay {
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#0ea5a4;
-  font-weight:bold;
-  font-size:20px;
-  border-radius:12px;
-  z-index:12;
+#overlay { 
+  position:absolute; inset:0; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; color:#0ea5a4; font-weight:bold; font-size:18px; z-index:10; border-radius:12px; 
   pointer-events:none;
-  flex-direction:column;
-}
-#turboOverlay .ray {
-  width: 60px; height: 2px;
-  background: linear-gradient(90deg, #0ea5a4, #3b82f6);
-  margin:4px;
-  animation:rayMove 0.6s linear infinite;
-}
-@keyframes rayMove {
-  0% { transform: translateX(-100%); opacity:0; }
-  30% { transform: translateX(0%); opacity:1; }
-  60% { transform: translateX(100%); opacity:0.7; }
-  100% { transform: translateX(120%); opacity:0; }
 }
 
 #adBlocked {
@@ -95,6 +72,7 @@ header img { width:48px; height:48px; animation:spin 4s linear infinite; }
 @media(max-width:500px){ .channel{width:90%;} }
 </style>
 </head>
+
 <body>
 <header>
 <img src="https://raw.githubusercontent.com/Oliverrc98/sportplaylive/main/img/windows_media_player.png" alt="Logo">
@@ -106,8 +84,12 @@ SportPlay TV
 <div class="player-wrap">
 <div class="player-card">
 <div class="player-frame" id="playerFrame">
-<iframe id="player" allowfullscreen referrerpolicy="no-referrer" style="opacity:1;"></iframe>
-<iframe id="playerBuffer" allowfullscreen referrerpolicy="no-referrer" style="opacity:0;position:absolute;inset:0;"></iframe>
+<iframe 
+    id="player" 
+    src="" 
+    allowfullscreen 
+    referrerpolicy="no-referrer">
+</iframe>
 <div id="adBlocked">Anuncio bloqueado 🚫</div>
 </div>
 
@@ -126,118 +108,91 @@ Con el <strong class="turbo-highlight">Modo Turbo</strong> recibe la señal ante
 * Velocidad puede variar dependiendo de tu conexión a internet. <strong class="turbo-highlight">¿Mal internet?</strong> Nuestro sistema se adapta automáticamente para que no te pierdas de ningún momento.
 </p>
 </div>
+
 </div>
 </div>
 
 <script>
 // Bloqueo global de pop-ups
 (function() {
+    const originalOpen = window.open;
     window.open = function(url, name, specs) {
+        console.log("Intento de abrir pop-up bloqueado:", url);
         const ad = document.getElementById('adBlocked');
         ad.style.display='block';
         setTimeout(()=>ad.style.display='none',1500);
-        return null;
+        return null; // Bloquea pop-ups
     };
 })();
 
 let currentChannel = null;
 const title = document.getElementById('playerTitle');
 const iframe = document.getElementById('player');
-const buffer = document.getElementById('playerBuffer');
 const playerFrame = document.getElementById('playerFrame');
 const sdBtn = document.getElementById('sdBtn');
 const hdBtn = document.getElementById('hdBtn');
 const fsBtn = document.getElementById('fsBtn');
 
-// Carga de canales
-async function loadChannels(){
+async function loadChannels() {
     const response = await fetch('channels.json');
     const channels = await response.json();
     const list = document.getElementById('channelList');
 
-    channels.forEach((ch,index)=>{
-        const div=document.createElement('div');
-        div.className='channel';
-        div.textContent=ch.name;
-        div.onclick=()=>activateChannel(ch,div);
+    channels.forEach((ch, index) => {
+        const div = document.createElement('div');
+        div.className = 'channel';
+        div.textContent = ch.name;
+        div.onclick = () => activateChannel(ch, div);
         list.appendChild(div);
-        if(index===0) activateChannel(ch,div);
+
+        if(index === 0) activateChannel(ch, div);
     });
 }
 
-// Overlay Turbo animado
-function showTurboOverlay(message="Activando Modo Turbo..."){
-    const existing = document.getElementById('turboOverlay');
-    if(existing) existing.remove();
-    
+// Overlay temporal
+function showOverlay(){
     const overlay = document.createElement('div');
-    overlay.id="turboOverlay";
-    
-    const text = document.createElement('div');
-    text.textContent=message;
-    overlay.appendChild(text);
-    
-    for(let i=0;i<3;i++){
-        const ray=document.createElement('div');
-        ray.className='ray';
-        ray.style.animationDelay = `${i*0.2}s`;
-        overlay.appendChild(ray);
-    }
+    overlay.id = "overlay";
+    overlay.textContent = "Cargando Modo Turbo...";
     playerFrame.appendChild(overlay);
-    setTimeout(()=>overlay.remove(),1200);
+    setTimeout(()=>overlay.remove(),1500);
 }
 
-// Swapping suave con Turbo (solo mensaje Modo Turbo)
-function setStreamByConnection(){
-    if(!currentChannel) return;
-
-    showTurboOverlay();
-    buffer.src = currentChannel.streams.hd+"?turbo=1"; // siempre la mejor señal
-    buffer.onload=function(){
-        iframe.style.opacity=0;
-        buffer.style.opacity=1;
-        setTimeout(()=>{
-            iframe.src=buffer.src;
-            iframe.style.opacity=1;
-            buffer.style.opacity=0;
-            buffer.src="about:blank";
-        },100);
-    };
-}
-
-// Activar canal
-function activateChannel(ch,div){
+function activateChannel(ch, div){
     document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
     div.classList.add('active');
-    title.textContent=ch.name;
+    title.textContent = ch.name;
     currentChannel = ch;
-    
-    showTurboOverlay();   // "Activando Modo Turbo..."
-    setStreamByConnection();
 
-    // Flash rayitos sobre iframe
+    const fastConnection = navigator.connection && navigator.connection.downlink >= 5;
+    iframe.src = (fastConnection ? ch.streams.hd : ch.streams.sd) + "?turbo=1";
+
+    showOverlay();
+
+    // Flash principal
     const flash = document.createElement('div');
-    flash.className='turbo-flash';
+    flash.className = 'turbo-flash';
     playerFrame.appendChild(flash);
+
+    // Rayitos aleatorios
     for(let i=0;i<3;i++){
         const ray = document.createElement('div');
-        ray.className='rayito';
-        ray.style.animation=`lightning 0.3s ease-out ${i*0.1}s`;
+        ray.className = 'rayito';
+        ray.style.animation = `lightning 0.3s ease-out ${i*0.1}s`;
         flash.appendChild(ray);
     }
+
     setTimeout(()=>flash.remove(),600);
 
-    // Animación palabras clave en tip
     document.querySelectorAll('.turbo-highlight').forEach(el=>{
         el.classList.add('flash-text');
         setTimeout(()=>el.classList.remove('flash-text'),600);
     });
 }
 
-// Botones
-sdBtn.onclick = ()=>{ if(currentChannel){ showTurboOverlay(); buffer.src=currentChannel.streams.sd+"?turbo=1"; setStreamByConnection(); } };
-hdBtn.onclick = ()=>{ if(currentChannel){ showTurboOverlay(); buffer.src=currentChannel.streams.hd+"?turbo=1"; setStreamByConnection(); } };
-fsBtn.onclick = ()=>{ if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
+sdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.sd + "?turbo=1"; showOverlay(); } };
+hdBtn.onclick = () => { if(currentChannel) { iframe.src = currentChannel.streams.hd + "?turbo=1"; showOverlay(); } };
+fsBtn.onclick = () => { if(iframe.requestFullscreen) iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen(); };
 
 loadChannels();
 </script>
